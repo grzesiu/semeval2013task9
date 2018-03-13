@@ -10,8 +10,8 @@ class PairType(Enum):
 
 
 class Pair(Structure):
-    def __init__(self, _id, e1, e2, ddi, pair_type):
-        super().__init__(_id)
+    def __init__(self, id_, e1, e2, ddi, pair_type):
+        super().__init__(id_)
         self.e1 = e1
         self.e2 = e2
         self.ddi = ddi
@@ -19,4 +19,9 @@ class Pair(Structure):
 
     @classmethod
     def parse(cls, node):
-        pass
+        id_ = node.attrib.get('id')
+        e1 = node.attrib.get('e1')
+        e2 = node.attrib.get('e2')
+        ddi = node.attrib.get('ddi')
+        pair_type = node.attrib.get('type')
+        return Pair(id_, e1, e2, ddi, pair_type)

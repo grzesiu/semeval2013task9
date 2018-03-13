@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 
 
 class Structure(ABC):
-    def __init__(self, _id):
-        self._id = _id
+    def __init__(self, id_):
+        self.id_ = id_
 
     @classmethod
     @abstractmethod

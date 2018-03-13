@@ -10,12 +10,16 @@ class EntityType(Enum):
 
 
 class Entity(Structure):
-    def __init__(self, _id, char_offset, entity_type, text):
-        super().__init__(_id)
+    def __init__(self, id_, char_offset, entity_type, text):
+        super().__init__(id_)
         self.char_offset = char_offset
         self.entity_type = entity_type
         self.text = text
 
     @classmethod
     def parse(cls, node):
-        pass
+        id_ = node.attrib.get('id')
+        char_offset = node.attrib.get('charOffset')
+        entity_type = node.attrib.get('type')
+        text = node.attrib.get('text')
+        return Entity(id_, char_offset, entity_type, text)
