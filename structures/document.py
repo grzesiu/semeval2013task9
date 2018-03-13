@@ -6,5 +6,6 @@ class Document(Structure):
         self._id = _id
         self.sentences = sentences
 
-    def parse(self):
+    @classmethod
+    def parse(cls, node):
         pass

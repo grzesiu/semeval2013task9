@@ -8,5 +8,6 @@ class Sentence(Structure):
         self.entities = entities
         self.pairs = pairs
 
-    def parse(self):
+    @classmethod
+    def parse(cls, node):
         pass

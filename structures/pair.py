@@ -4,10 +4,9 @@ from structures.structure import Structure
 
 
 class PairType(Enum):
-    ddi = 1
-    advice = 2
-    effect = 3
-    mechanism = 4
+    advice = 'advice'
+    effect = 'effect'
+    mechanism = 'mechanism'
 
 
 class Pair(Structure):
@@ -18,5 +17,6 @@ class Pair(Structure):
         self.ddi = ddi
         self.pair_type = pair_type
 
-    def parse(self):
+    @classmethod
+    def parse(cls, node):
         pass

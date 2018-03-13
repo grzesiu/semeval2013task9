@@ -4,10 +4,9 @@ from structures.structure import Structure
 
 
 class EntityType(Enum):
-    drug = 1
-    brand = 2
-    group = 3
-    no_human = 4
+    drug = 'drug'
+    brand = 'brand'
+    group = 'group'
 
 
 class Entity(Structure):
@@ -17,5 +16,6 @@ class Entity(Structure):
         self.entity_type = entity_type
         self.text = text
 
-    def parse(self):
+    @classmethod
+    def parse(cls, node):
         pass
