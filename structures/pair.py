@@ -11,7 +11,7 @@ class PairType(Enum):
 
 class Pair(Structure):
     def __init__(self, _id, e1, e2, ddi, pair_type):
-        self._id = _id
+        super().__init__(_id)
         self.e1 = e1
         self.e2 = e2
         self.ddi = ddi

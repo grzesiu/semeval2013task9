@@ -11,7 +11,7 @@ class EntityType(Enum):
 
 class Entity(Structure):
     def __init__(self, _id, char_offset, entity_type, text):
-        self._id = _id
+        super().__init__(_id)
         self.char_offset = char_offset
         self.entity_type = entity_type
         self.text = text

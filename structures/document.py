@@ -3,7 +3,7 @@ from structures.structure import Structure
 
 class Document(Structure):
     def __init__(self, _id, sentences):
-        self._id = _id
+        super().__init__(_id)
         self.sentences = sentences
 
     @classmethod
