@@ -13,6 +13,6 @@ class Sentence(Structure):
     def parse(cls, node):
         id_ = node.attrib.get('id')
         text = node.attrib.get('text')
-        sentences = [Sentence.parse(child) for child in node.findall('entity')]
+        entities = [Sentence.parse(child) for child in node.findall('entity')]
         pairs = [Pair.parse(child) for child in node.findall('pair')]
-        return Sentence(id_, text, sentences, pairs)
+        return Sentence(id_, text, entities, pairs)
