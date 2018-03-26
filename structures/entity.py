@@ -19,7 +19,11 @@ class Entity(Structure):
     @classmethod
     def parse(cls, node):
         id_ = node.attrib.get('id')
-        char_offset = node.attrib.get('charOffset')
+        char_offset = Entity.parse_offset(node.attrib.get('charOffset'))
         entity_type = node.attrib.get('type')
         text = node.attrib.get('text')
         return Entity(id_, char_offset, entity_type, text)
+
+    @staticmethod
+    def parse_offset(char_offset):
+        return [tuple(map(int, offset.split('-'))) for offset in char_offset.split(';')]
