@@ -3,19 +3,19 @@ from enum import Enum
 from structures.structure import Structure
 
 
-class PairType(Enum):
+class Label(Enum):
     advice = 'advice'
     effect = 'effect'
     mechanism = 'mechanism'
 
 
 class Pair(Structure):
-    def __init__(self, id_, e1, e2, ddi, pair_type):
+    def __init__(self, id_, e1, e2, ddi, label):
         super().__init__(id_)
         self.e1 = e1
         self.e2 = e2
         self.ddi = ddi
-        self.pair_type = pair_type
+        self.label = label
 
     @classmethod
     def parse(cls, node):
@@ -23,5 +23,5 @@ class Pair(Structure):
         e1 = node.attrib.get('e1')
         e2 = node.attrib.get('e2')
         ddi = node.attrib.get('ddi')
-        pair_type = node.attrib.get('type')
-        return Pair(id_, e1, e2, ddi, pair_type)
+        label = node.attrib.get('type')
+        return Pair(id_, e1, e2, ddi, label)

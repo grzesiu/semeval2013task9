@@ -3,27 +3,27 @@ from enum import Enum
 from structures.structure import Structure
 
 
-class EntityType(Enum):
+class Label(Enum):
     drug = 'drug'
     brand = 'brand'
     group = 'group'
 
 
 class Entity(Structure):
-    def __init__(self, id_, char_offset, entity_type, text):
+    def __init__(self, id_, offsets, label, text):
         super().__init__(id_)
-        self.char_offset = char_offset
-        self.entity_type = entity_type
+        self.offsets = offsets
+        self.label = label
         self.text = text
 
     @classmethod
     def parse(cls, node):
         id_ = node.attrib.get('id')
-        char_offset = Entity.parse_offset(node.attrib.get('charOffset'))
-        entity_type = node.attrib.get('type')
+        offsets = Entity.parse_offsets(node.attrib.get('charOffset'))
+        label = node.attrib.get('type')
         text = node.attrib.get('text')
-        return Entity(id_, char_offset, entity_type, text)
+        return Entity(id_, offsets, label, text)
 
     @staticmethod
-    def parse_offset(char_offset):
-        return [tuple(map(int, offset.split('-'))) for offset in char_offset.split(';')]
+    def parse_offsets(offset):
+        return [tuple(map(int, offset.split('-'))) for offset in offset.split(';')]
