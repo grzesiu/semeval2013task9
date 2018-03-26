@@ -1,4 +1,4 @@
-import sys
+import argparse
 import xml.etree.ElementTree
 
 from structures.document import Document
@@ -10,5 +10,12 @@ def read(filename):
     print(doc.sentences[0].entities[0].id_)
 
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--train_dir', default='Train/DrugBank/', help='Train directory')
+    return parser.parse_args()
+
+
 if __name__ == '__main__':
-    read(sys.argv[1])
+    args = parse_args()
+    print(args.train_dir)
