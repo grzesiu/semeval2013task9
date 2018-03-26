@@ -18,9 +18,8 @@ def parse_args():
 
 def main():
     args = parse_args()
-    for filename in os.listdir(args.train_dir):
-        print(filename)
-        read(os.path.join(args.train_dir, filename))
+    docs = [read(os.path.join(args.train_dir, filename)) for filename in os.listdir(args.train_dir)]
+    print(docs[0].sentences[0].features)
 
 
 if __name__ == '__main__':
