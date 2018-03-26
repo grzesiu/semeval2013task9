@@ -1,4 +1,5 @@
 import argparse
+import os
 import xml.etree.ElementTree
 
 from structures.document import Document
@@ -6,8 +7,7 @@ from structures.document import Document
 
 def read(filename):
     tree = xml.etree.ElementTree.parse(filename)
-    doc = Document.parse(tree.getroot())
-    print(doc.sentences[0].entities[0].id_)
+    return Document.parse(tree.getroot())
 
 
 def parse_args():
@@ -16,6 +16,12 @@ def parse_args():
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+def main():
     args = parse_args()
-    print(args.train_dir)
+    for filename in os.listdir(args.train_dir):
+        print(filename)
+        read(os.path.join(args.train_dir, filename))
+
+
+if __name__ == '__main__':
+    main()
