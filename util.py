@@ -1,5 +1,8 @@
-def word2features(sent, i):
-    word = sent[i]
+import re
+
+
+def word2features(words, i):
+    word = words[i]
     features = [
         'bias',
         'word.lower=' + word.lower(),
@@ -10,7 +13,7 @@ def word2features(sent, i):
         'word.isdigit=%s' % word.isdigit(),
     ]
     if i > 0:
-        word1 = sent[i - 1]
+        word1 = words[i - 1]
         features.extend([
             '-1:word.lower=' + word1.lower(),
             '-1:word.istitle=%s' % word1.istitle(),
@@ -19,8 +22,8 @@ def word2features(sent, i):
     else:
         features.append('BOS')
 
-    if i < len(sent) - 1:
-        word1 = sent[i + 1]
+    if i < len(words) - 1:
+        word1 = words[i + 1]
         features.extend([
             '+1:word.lower=' + word1.lower(),
             '+1:word.istitle=%s' % word1.istitle(),
@@ -32,5 +35,11 @@ def word2features(sent, i):
     return features
 
 
-def sent2features(sent):
-    return [word2features(sent, i) for i in range(len(sent))]
+def words2features(words):
+    return [word2features(words, i) for i in range(len(words))]
+
+
+def text2iob(text):
+    print(text)
+    elements = re.split(r'\s|((?!\w|\'|[.,](?=\w)|(?<=\w)\+).)', text)
+    return list(filter(None, elements))
