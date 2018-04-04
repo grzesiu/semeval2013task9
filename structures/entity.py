@@ -26,7 +26,7 @@ class Entity(Structure):
 
     def __repr__(self):
         return ' '.join(
-            [self.text, self.label, *[str(offset.start) + '-' + str(offset.end) for offset in self.offsets]])
+            [self.text, self.label, *[repr(offset) for offset in self.offsets]])
 
 
 class Offset:
@@ -37,3 +37,6 @@ class Offset:
     @classmethod
     def parse(cls, offset_as_str):
         return [cls(*map(int, offset.split('-'))) for offset in offset_as_str.split(';')]
+
+    def __repr__(self):
+        return str(self.start) + '-' + str(self.end)
