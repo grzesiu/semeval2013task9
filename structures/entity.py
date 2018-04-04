@@ -10,9 +10,9 @@ class Label(Enum):
 
 
 class Entity(Structure):
-    def __init__(self, id_, offsets, label, text):
+    def __init__(self, id_, offset, label, text):
         super().__init__(id_)
-        self.offsets = offsets
+        self.offset = offset
         self.label = label
         self.text = text
 
@@ -22,11 +22,10 @@ class Entity(Structure):
         offsets = Offset.parse(node.attrib.get('charOffset'))
         label = node.attrib.get('type')
         text = node.attrib.get('text')
-        return Entity(id_, offsets, label, text)
+        return [Entity(id_, offset, label, text) for offset in offsets]
 
     def __repr__(self):
-        return ' '.join(
-            [self.text, self.label, *[repr(offset) for offset in self.offsets]])
+        return ' '.join([self.text, self.label, repr(self.offset)])
 
 
 class Offset:
