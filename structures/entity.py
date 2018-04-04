@@ -19,14 +19,10 @@ class Entity(Structure):
     @classmethod
     def parse(cls, node):
         id_ = node.attrib.get('id')
-        offsets = Entity.parse_offsets(node.attrib.get('charOffset'))
+        offsets = Offset.parse(node.attrib.get('charOffset'))
         label = node.attrib.get('type')
         text = node.attrib.get('text')
         return Entity(id_, offsets, label, text)
-
-    @staticmethod
-    def parse_offsets(offset):
-        return [Offset(*map(int, offset.split('-'))) for offset in offset.split(';')]
 
     def __repr__(self):
         return ' '.join(
@@ -37,3 +33,7 @@ class Offset:
     def __init__(self, start, end):
         self.start = start
         self.end = end
+
+    @classmethod
+    def parse(cls, offset_as_str):
+        return [cls(*map(int, offset.split('-'))) for offset in offset_as_str.split(';')]
