@@ -26,7 +26,14 @@ class Entity(Structure):
 
     @staticmethod
     def parse_offsets(offset):
-        return [tuple(map(int, offset.split('-'))) for offset in offset.split(';')]
+        return [Offset(*map(int, offset.split('-'))) for offset in offset.split(';')]
 
     def __repr__(self):
-        return ' '.join([self.text, self.label, *[str(offset[0]) + '-' + str(offset[1]) for offset in self.offsets]])
+        return ' '.join(
+            [self.text, self.label, *[str(offset.start) + '-' + str(offset.end) for offset in self.offsets]])
+
+
+class Offset:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
