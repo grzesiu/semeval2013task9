@@ -19,11 +19,18 @@ def parse_args():
 def test_labeling():
     args = parse_args()
     docs = [read(os.path.join(args.train_dir, filename)) for filename in os.listdir(args.train_dir)]
-    print(docs[0].sentences[1].text.get_split())
+    print(docs[0].sentences[1].text)
+    print(docs[0].sentences[1].entities)
+
+
+def test_iob():
+    args = parse_args()
+    docs = [read(os.path.join(args.train_dir, filename)) for filename in os.listdir(args.train_dir)]
+    print(docs[0].sentences[1].to_iob())
 
 
 def main():
-    test_labeling()
+    test_iob()
 
 
 if __name__ == '__main__':

@@ -13,3 +13,18 @@ print(iob_tags)
 tree = conlltags2tree(iob_tags)
 print(tree)
 # (S (GPE New/NNP York/NNP) is/VBZ my/PRP$ favorite/JJ city/NN)
+
+
+
+# @staticmethod
+# def parse_labels(text, entities):
+#     matches = [(m.group(0), (m.start(), m.end() - 1)) for m in re.finditer(r'\S+', text)]
+#     words, offsets = zip(*matches)
+#     labels = []
+#     for offset in offsets:
+#         for entity in entities:
+#             if offset in entity.offsets:
+#                 labels.append(entity.label)
+#         else:
+#             labels.append(None)
+#     return words, labels

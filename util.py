@@ -39,7 +39,6 @@ def words2features(words):
     return [word2features(words, i) for i in range(len(words))]
 
 
-def text2iob(text):
-    print(text)
-    elements = re.split(r'\s|((?!\w|\'|[.,](?=\w)|(?<=\w)\+).)', text)
-    return list(filter(None, elements))
+def split(text):
+    split_text = re.split(r'\s|((?!\w|\'|[.,](?=\w)|(?<=\w)\+).)', text)
+    return list(filter(None, split_text))
