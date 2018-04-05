@@ -1,12 +1,12 @@
-from utils.feature_extraction import sent2features
+from structures.entity import Entity
 from structures.pair import Pair
 from structures.structure import Structure
 
 
 class Sentence(Structure):
-    def __init__(self, id_, features, entities, pairs):
+    def __init__(self, id_, text, entities, pairs):
         super().__init__(id_)
-        self.features = features
+        self.text = text
         self.entities = entities
         self.pairs = pairs
 
@@ -14,9 +14,9 @@ class Sentence(Structure):
     def parse(cls, node):
         id_ = node.attrib.get('id')
         text = node.attrib.get('text')
-
-        features = sent2features(text.split())
-
-        entities = [Sentence.parse(child) for child in node.findall('entity')]
+        entities = [Entity.parse(child) for child in node.findall('entity')]
         pairs = [Pair.parse(child) for child in node.findall('pair')]
-        return Sentence(id_, features, entities, pairs)
+        return cls(id_, text, entities, pairs)
+
+    def __repr__(self):
+        return self.text

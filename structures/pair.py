@@ -3,13 +3,14 @@ from enum import Enum
 from structures.structure import Structure
 
 
-class Label(Enum):
-    advice = 'advice'
-    effect = 'effect'
-    mechanism = 'mechanism'
-
-
 class Pair(Structure):
+    class Label(Enum):
+        advice = 'advise'
+        effect = 'effect'
+        mechanism = 'mechanism'
+        int = 'int'
+        none = None
+
     def __init__(self, id_, e1, e2, ddi, label):
         super().__init__(id_)
         self.e1 = e1
@@ -23,5 +24,5 @@ class Pair(Structure):
         e1 = node.attrib.get('e1')
         e2 = node.attrib.get('e2')
         ddi = node.attrib.get('ddi')
-        label = node.attrib.get('type')
+        label = Pair.Label(node.attrib.get('type'))
         return Pair(id_, e1, e2, ddi, label)
