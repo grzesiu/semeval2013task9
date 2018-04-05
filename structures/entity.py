@@ -22,7 +22,7 @@ class Entity(Structure):
         offsets = Entity.parse_offsets(node.attrib.get('charOffset'))
         label = Entity.Label(node.attrib.get('type'))
         text = node.attrib.get('text')
-        return cls(id_, offsets, label, text)
+        return [cls(id_, offset, label, text) for offset in offsets]
 
     @staticmethod
     def parse_offsets(offset):

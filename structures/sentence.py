@@ -14,7 +14,7 @@ class Sentence(Structure):
     def parse(cls, node):
         id_ = node.attrib.get('id')
         text = node.attrib.get('text')
-        entities = [Entity.parse(child) for child in node.findall('entity')]
+        entities = [entity for child in node.findall('entity') for entity in Entity.parse(child)]
         pairs = [Pair.parse(child) for child in node.findall('pair')]
         return cls(id_, text, entities, pairs)
 
