@@ -5,13 +5,15 @@ from structures.iob import IOB
 from structures.structure import Structure
 
 
-class Label(Enum):
-    drug = 'drug'
-    brand = 'brand'
-    group = 'group'
-
-
 class Entity(Structure):
+    class Label(Enum):
+        drug = 'drug'
+        brand = 'brand'
+        group = 'group'
+
+        def __str__(self):
+            return str(self.value)
+
     def __init__(self, id_, offset, label, text):
         super().__init__(id_)
         self.offset = offset
@@ -63,6 +65,9 @@ class Entity(Structure):
 
     def __repr__(self):
         return ' '.join([self.text, self.label, repr(self.offset)])
+
+    def __str__(self):
+        return self.__repr__()
 
 
 class Offset:

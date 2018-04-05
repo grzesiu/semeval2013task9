@@ -1,6 +1,3 @@
-import re
-
-
 def word2features(words, i):
     word = words[i]
     features = [
