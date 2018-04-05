@@ -27,10 +27,10 @@ class Entity(Structure):
         return [Entity(id_, offset, label, text) for offset in offsets]
 
     def to_iobs(self):
-        def get_iob_label():
+        def get_iob_label(k):
             if self.label is None:
                 return IOB.Label.O
-            elif i == 0:
+            elif k == 0:
                 return IOB.Label.B
             else:
                 return IOB.Label.I
@@ -38,22 +38,27 @@ class Entity(Structure):
         indices = [Offset(m.start(0), m.end(0)) for m in re.finditer(r'\W', self.text)]
         iobs = []
         previous = 0
-        for i, index in enumerate(indices):
+        i = 0
+        for index in indices:
             word = self.text[previous:index.start]
             separator = self.text[index.start:index.end]
             if word != '':
                 iobs.append(IOB(word,
                                 Offset(previous + self.offset.start, index.start + self.offset.start),
-                                get_iob_label(),
+                                get_iob_label(i),
                                 self.label))
             if separator != ' ':
                 iobs.append(IOB(separator,
                                 Offset(index.start + self.offset.start, index.end + self.offset.start),
-                                get_iob_label(),
+                                get_iob_label(i),
                                 self.label))
             previous = index.end
+            i += 1
         if previous < len(self.text):
-            iobs.append(self.text[previous:])
+            iobs.append(IOB(self.text[previous:],
+                            Offset(previous + self.offset.start, len(self.text) - 1 + self.offset.start),
+                            get_iob_label(i),
+                            self.label))
         return iobs
 
     def __repr__(self):
