@@ -11,4 +11,4 @@ class Document(Structure):
     def parse(cls, node):
         id_ = node.attrib.get('id')
         sentences = [Sentence.parse(child) for child in node]
-        return Document(id_, sentences)
+        return cls(id_, sentences)

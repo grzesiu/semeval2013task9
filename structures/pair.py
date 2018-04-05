@@ -24,4 +24,4 @@ class Pair(Structure):
         e2 = node.attrib.get('e2')
         ddi = node.attrib.get('ddi')
         label = node.attrib.get('type')
-        return Pair(id_, e1, e2, ddi, label)
+        return cls(id_, e1, e2, ddi, label)

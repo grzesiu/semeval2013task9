@@ -26,7 +26,7 @@ class Entity(Structure):
         offsets = Offset.parse(node.attrib.get('charOffset'))
         label = node.attrib.get('type')
         text = node.attrib.get('text')
-        return [Entity(id_, offset, label, text) for offset in offsets]
+        return [cls(id_, offset, label, text) for offset in offsets]
 
     def to_iobs(self):
         def get_iob_label(k):

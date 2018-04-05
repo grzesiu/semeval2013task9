@@ -16,7 +16,7 @@ class Sentence(Structure):
         text = node.attrib.get('text')
         entities = [entity for child in node.findall('entity') for entity in Entity.parse(child)]
         pairs = [Pair.parse(child) for child in node.findall('pair')]
-        return Sentence(id_, text, entities, pairs)
+        return cls(id_, text, entities, pairs)
 
     def to_iobs(self):
         iobs = []
