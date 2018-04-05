@@ -1,5 +1,7 @@
+import re
 from enum import Enum
 
+from structures.iob import IOB
 from structures.structure import Structure
 
 
@@ -23,6 +25,30 @@ class Entity(Structure):
         label = node.attrib.get('type')
         text = node.attrib.get('text')
         return [Entity(id_, offset, label, text) for offset in offsets]
+
+    def to_iobs(self):
+        def get_iob_label():
+            if self.label is None:
+                return IOB.Label.O
+            elif i == 1:
+                return IOB.Label.B
+            else:
+                return IOB.Label.I
+
+        indices = [Offset(m.start(0), m.end(0)) for m in re.finditer(r'\W', self.text)]
+        iobs = []
+        previous = 0
+        for i, index in enumerate(indices):
+            word = IOB(self.text, previous, index.start, get_iob_label(), self.label)
+            separator = self.text[index.start:index.end]
+            previous = index.end
+            if word != '':
+                iobs.append(word)
+            if separator != ' ':
+                iobs.append(separator)
+        if previous < len(self.text):
+            iobs.append(self.text[previous:])
+        return iobs
 
     def __repr__(self):
         return ' '.join([self.text, self.label, repr(self.offset)])

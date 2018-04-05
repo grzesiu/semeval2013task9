@@ -1,9 +1,6 @@
-from enum import Enum
-
-from structures.entity import Entity
+from structures.entity import Entity, Offset
 from structures.pair import Pair
 from structures.structure import Structure
-from util import split
 
 
 class Sentence(Structure):
@@ -21,40 +18,48 @@ class Sentence(Structure):
         pairs = [Pair.parse(child) for child in node.findall('pair')]
         return Sentence(id_, text, entities, pairs)
 
-    def to_iob(self):
+    def to_iobs(self):
         iobs = []
-
-        def add(chunk, entity_label):
-            def get_iob_label():
-                if entity_label is None:
-                    return IOB.Label.O
-                elif element_no == 1:
-                    return IOB.Label.B
-                else:
-                    return IOB.Label.I
-
-            for element_no, element in enumerate(split(chunk)):
-                iobs.append(IOB(element, get_iob_label(), entity_label))
-
-        add(self.text[0:self.entities[0].offset.start], None)
-        add(self.text[self.entities[0].offset.start:self.entities[0].offset.end], self.entities[0].label)
-
-        for i in range(1, len(self.entities)):
-            add(self.text[self.entities[i - 1].offset.end:self.entities[i].offset.start], None)
-            add(self.text[self.entities[i].offset.start:self.entities[i].offset.end], self.entities[i])
-
-        add(self.text[self.entities[-1].offset.end:len(self.text)], None)
+        previous = 0
+        for entity in self.entities:
+            iobs.extend(Entity(None,
+                               Offset(previous, entity.offset.start - 1),
+                               None,
+                               self.text[previous:entity.offset.start]).to_iobs())
+            iobs.extend(entity.to_iobs())
+            previous = entity.offset.end + 1
 
         return iobs
 
-
-class IOB:
-    class Label(Enum):
-        I = 'I'
-        O = 'O'
-        B = 'B'
-
-    def __init__(self, text, label, iob_label):
-        self.text = text
-        self.label = label
-        self.iob_label = iob_label
+#
+# class IOBsCreator:
+#     @staticmethod
+#     def create(text, entities):
+#         iobs = []
+#
+#         def add(chunk, start, end, entity_label):
+#             def get_iob_label():
+#                 if entity_label is None:
+#                     return IOB.Label.O
+#                 elif element_no == 1:
+#                     return IOB.Label.B
+#                 else:
+#                     return IOB.Label.I
+#
+#             for element_no, element in enumerate(IOBsCreator.split(chunk)):
+#                 iobs.append(IOB(element, start, end, entity_label, get_iob_label()))
+#
+#         add(text[0:entities[0].offset.start], None)
+#         add(text[entities[0].offset.start:entities[0].offset.end], entities[0].label)
+#
+#         for i in range(1, len(entities)):
+#             add(text[entities[i - 1].offset.end:entities[i].offset.start], None)
+#             add(text[entities[i].offset.start:entities[i].offset.end], entities[i])
+#
+#         add(text[entities[-1].offset.end:len(text)], None)
+#
+#         return iobs
+#
+#     @staticmethod
+#     def find_split_indices(text):
+#         return [(m.start(0), m.end(0)) for m in re.finditer(r'\W', text)]
