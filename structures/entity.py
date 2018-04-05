@@ -42,19 +42,19 @@ class Entity(Structure):
         for index in indices:
             word = self.text[previous:index.start]
             separator = self.text[index.start:index.end]
-            if word != '':
+            if word.strip():
                 iobs.append(IOB(word,
                                 Offset(previous + self.offset.start, index.start + self.offset.start),
                                 get_iob_label(i),
                                 self.label))
-            if separator != ' ':
+            if separator.strip():
                 iobs.append(IOB(separator,
                                 Offset(index.start + self.offset.start, index.end + self.offset.start),
                                 get_iob_label(i),
                                 self.label))
             previous = index.end
             i += 1
-        if previous < len(self.text):
+        if self.text[previous:].strip():
             iobs.append(IOB(self.text[previous:],
                             Offset(previous + self.offset.start, len(self.text) - 1 + self.offset.start),
                             get_iob_label(i),
