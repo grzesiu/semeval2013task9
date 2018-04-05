@@ -1,8 +1,8 @@
-from enum import Enum
+from structures.label import Label
 
 
 class IOB:
-    class Label(Enum):
+    class Label(Label):
         I = 'I'
         O = 'O'
         B = 'B'

@@ -1,13 +1,12 @@
-from enum import Enum
-
 import nltk
 
 from structures.iob import IOB
+from structures.label import Label
 from structures.structure import Structure
 
 
 class Entity(Structure):
-    class Label(Enum):
+    class Label(Label):
         drug = 'drug'
         drug_n = 'drug_n'
         brand = 'brand'
