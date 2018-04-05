@@ -7,9 +7,11 @@ class IOB:
         O = 'O'
         B = 'B'
 
-    def __init__(self, text, start, end, iob_label, entity_label=None):
-        self.chunk = text[start:end]
-        self.start = start
-        self.end = end
+    def __init__(self, text, offset, iob_label, entity_label=None):
+        self.text = text
+        self.offset = offset
         self.iob_label = iob_label
         self.entity_label = entity_label
+
+    def __repr__(self):
+        return ' '.join(map(str, self.__dict__.values()))

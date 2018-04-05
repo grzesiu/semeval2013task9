@@ -30,7 +30,7 @@ class Entity(Structure):
         def get_iob_label():
             if self.label is None:
                 return IOB.Label.O
-            elif i == 1:
+            elif i == 0:
                 return IOB.Label.B
             else:
                 return IOB.Label.I
@@ -39,13 +39,19 @@ class Entity(Structure):
         iobs = []
         previous = 0
         for i, index in enumerate(indices):
-            word = IOB(self.text, previous, index.start, get_iob_label(), self.label)
+            word = self.text[previous:index.start]
             separator = self.text[index.start:index.end]
-            previous = index.end
             if word != '':
-                iobs.append(word)
+                iobs.append(IOB(word,
+                                Offset(previous + self.offset.start, index.start + self.offset.start),
+                                get_iob_label(),
+                                self.label))
             if separator != ' ':
-                iobs.append(separator)
+                iobs.append(IOB(separator,
+                                Offset(index.start + self.offset.start, index.end + self.offset.start),
+                                get_iob_label(),
+                                self.label))
+            previous = index.end
         if previous < len(self.text):
             iobs.append(self.text[previous:])
         return iobs

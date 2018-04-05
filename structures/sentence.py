@@ -29,6 +29,10 @@ class Sentence(Structure):
             iobs.extend(entity.to_iobs())
             previous = entity.offset.end + 1
 
+        iobs.extend(Entity(None,
+                           Offset(previous, len(self.text)),
+                           None,
+                           self.text[previous:len(self.text)]).to_iobs())
         return iobs
 
 #
