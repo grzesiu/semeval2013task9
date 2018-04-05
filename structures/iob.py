@@ -14,7 +14,11 @@ class IOB:
         self.entity_label = entity_label
 
     def __repr__(self):
-        as_repr = '{0} {1} {2}'.format(self.text, self.pos_label, self.iob_label)
-        if self.entity_label:
-            as_repr += '-{0}'.format(self.entity_label)
+        as_repr = '{0} {1} {2}'.format(self.text, self.pos_label, self.get_label())
         return as_repr
+
+    def get_label(self):
+        label = str(self.iob_label)
+        if self.entity_label:
+            label += '-' + str(self.entity_label)
+        return label
