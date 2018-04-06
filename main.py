@@ -17,12 +17,10 @@ def parse_args():
     return parser.parse_args()
 
 
-def read_docs(args):
-    train_docs = [Document.from_file(os.path.join(args.train_dir, filename))
-                  for filename in os.listdir(args.train_dir)]
-    test_docs = [Document.from_file(os.path.join(args.test_dir, filename))
-                 for filename in os.listdir(args.test_dir)]
-    return train_docs, test_docs
+def read_docs(directory):
+    train_docs = [Document.from_file(os.path.join(directory, filename))
+                  for filename in os.listdir(directory)]
+    return train_docs
 
 
 def extract_data(docs):
@@ -80,8 +78,8 @@ def evaluate(x_test, y_test):
 
 def main():
     args = parse_args()
-    train_docs, test_docs = read_docs(args)
-
+    train_docs = read_docs(args.train_dir)
+    test_docs = read_docs(args.test_dir)
     x_train, y_train = extract_data(train_docs)
     x_test, y_test = extract_data(test_docs)
 

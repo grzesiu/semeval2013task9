@@ -14,8 +14,7 @@ class IOB:
         self.entity_label = entity_label
 
     def __repr__(self):
-        as_repr = '{0} {1} {2}'.format(self.text, self.pos_label, self.get_label())
-        return as_repr
+        return '{0} {1} {2}'.format(self.text, self.pos_label, self.get_label())
 
     def get_label(self):
         label = str(self.iob_label)
