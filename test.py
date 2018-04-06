@@ -1,5 +1,8 @@
-import nltk
+def test_labeling(docs):
+    print(docs[0].sentences[1].text)
+    print(docs[0].sentences[1].entities)
 
-text = nltk.word_tokenize(
-    "The majority of patients in RA clinical studies received one or more of the following concomitant medications with ORENCIA: MTX, NSAIDs, corticosteroids, TNF blocking agents, azathioprine, chloroquine, gold, hydroxychloroquine, leflunomide, sulfasalazine, and anakinra.")
-print(nltk.pos_tag(text))
+
+def test_iob_tagging(docs):
+    for iob in docs[0].sentences[1].to_iobs():
+        print(iob)
