@@ -9,19 +9,16 @@ from sklearn.preprocessing import LabelBinarizer
 import util
 from structures.document import Document
 
-
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--train_dir', default='Train/DrugBank/', help='Train directory')
     parser.add_argument('--test_dir', default='Test/Test for DrugNER task/DrugBank', help='Test directory')
     return parser.parse_args()
 
-
 def read_docs(directory):
     train_docs = [Document.from_file(os.path.join(directory, filename))
                   for filename in os.listdir(directory)]
     return train_docs
-
 
 def extract_data(docs):
     sentences_as_iobs = [sentence.to_iobs() for doc in docs for sentence in doc.sentences]
@@ -30,17 +27,17 @@ def extract_data(docs):
     return x, y
 
 
-def train(x_train, y_train):
+def train(x_train, y_train, c1=1.0, c2=1e-3, max_iterations=100, possible_transitions=True):
     trainer = pycrfsuite.Trainer(verbose=False)
 
     for x_seq, y_seq in zip(x_train, y_train):
         trainer.append(x_seq, y_seq)
 
     trainer.set_params({
-        'c1': 1.0,  # coefficient for L1 penalty
-        'c2': 1e-3,  # coefficient for L2 penalty
-        'max_iterations': 50,  # stop earlier
-        'feature.possible_transitions': True  # include transitions that are possible, but not observed
+        'c1': c1,  # coefficient for L1 penalty
+        'c2': c2,  # coefficient for L2 penalty
+        'max_iterations': max_iterations,  # stop earlier
+        'feature.possible_transitions': possible_transitions  # include transitions that are possible, but not observed
     })
     trainer.train('model_0.crfsuite')
 
@@ -82,9 +79,16 @@ def main():
     test_docs = read_docs(args.test_dir)
     x_train, y_train = extract_data(train_docs)
     x_test, y_test = extract_data(test_docs)
-
-    train(x_train, y_train)
+    # for c2 in [1e-3, 1e-2, 1e-1, 1, 10, 100]:
+    #     for possible_transitions in [True, False]:
+    #         print("c1="+str(0)+ ", c2="+str(c2)+ ", trans="+str(possible_transitions))
+    #         train(x_train, y_train, c1=0, c2=c2, max_iterations=1000, possible_transitions=possible_transitions)
+    #         evaluate(x_test, y_test)
+    #S    
+    # Train with the best parameters found so far
+    train(x_train, y_train, c1=0.001, c2=1, max_iterations=1000, possible_transitions=True)
     evaluate(x_test, y_test)
+
 
 
 if __name__ == '__main__':
