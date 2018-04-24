@@ -22,9 +22,8 @@ def parse_args():
 def extract_data(directory):
     docs = [Document.from_file(os.path.join(directory, filename))
             for filename in os.listdir(directory)]
-    sentences_as_iobs = [sentence.to_iobs() for doc in docs for sentence in doc.sentences]
-    x = [util.sentence_to_features(sentence_as_iobs) for sentence_as_iobs in sentences_as_iobs]
-    y = [util.sentence_to_labels(sentence_as_iobs) for sentence_as_iobs in sentences_as_iobs]
+    data = [util.sentence_to_features(sentence) for doc in docs for sentence in doc.sentences]
+    x, y, ids, offsets, texts = zip(*[zip(*i) for i in data])
     return x, y
 
 
@@ -43,11 +42,11 @@ def train(x_train, y_train, c1=1.0, c2=1e-3, max_iterations=100, possible_transi
     trainer.train('model_0.crfsuite')
 
 
-def predict(tagger, test_sentence):
-    print(test_sentence)
-    iobs = test_sentence.to_iobs()
-    print("Predicted:", ' '.join(tagger.tag(util.sentence_to_features(iobs))))
-    print("Correct:  ", ' '.join(util.sentence_to_labels(iobs)))
+# def predict(tagger, test_sentence):
+#     print(test_sentence)
+#     iobs = test_sentence.to_iobs()
+#     print("Predicted:", ' '.join(tagger.tag(util.sentence_to_features(iobs))))
+#     print("Correct:  ", ' '.join(util.sentence_to_labels(iobs)))
 
 
 def evaluate(x_test, y_test):

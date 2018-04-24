@@ -49,7 +49,7 @@ def isInDrugDictionary(text):
         return "NoMatch"
 
 
-def iob_to_features(iob_index, sentence_as_iobs):
+def iob_to_features(iob_index, sentence_as_iobs, sentence_id):
     iob = sentence_as_iobs[iob_index]
 
     ps = PorterStemmer()
@@ -111,16 +111,9 @@ def iob_to_features(iob_index, sentence_as_iobs):
     else:
         features.append('EOS')
 
-    return features
+    return features, iob.get_label(), sentence_id, iob.offset, iob.text
 
 
-def sentence_to_features(sentence_as_iobs):
-    return [iob_to_features(i, sentence_as_iobs) for i in range(len(sentence_as_iobs))]
-
-
-def sentence_to_labels(sentence_as_iobs):
-    return [iob.get_label() for iob in sentence_as_iobs]
-
-
-def sentence_to_tokens(sentence_as_iobs):
-    return [iob.text for iob in sentence_as_iobs]
+def sentence_to_features(sentence):
+    sentence_as_iobs = sentence.to_iobs()
+    return [iob_to_features(i, sentence_as_iobs, sentence.id_) for i in range(len(sentence_as_iobs))]
