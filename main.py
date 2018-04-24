@@ -15,7 +15,6 @@ def parse_args():
     parser.add_argument('--train', type=str, help='Train directory')
     parser.add_argument('--test', type=str, help='Test directory')
     parser.add_argument('--tune', help='Should tune the parameters', action='store_true')
-    parser.add_argument('--save', help='Should save the output', action='store_true')
     return parser.parse_args()
 
 
@@ -24,7 +23,7 @@ def extract_data(directory):
             for filename in os.listdir(directory)]
     data = [util.sentence_to_features(sentence) for doc in docs for sentence in doc.sentences]
     x, y, ids, offsets, texts = zip(*[zip(*i) for i in data])
-    return x, y
+    return x, y, ids, offsets, texts
 
 
 def train(x_train, y_train, c1=1.0, c2=1e-3, max_iterations=100, possible_transitions=True):
@@ -42,18 +41,29 @@ def train(x_train, y_train, c1=1.0, c2=1e-3, max_iterations=100, possible_transi
     trainer.train('model_0.crfsuite')
 
 
-# def predict(tagger, test_sentence):
-#     print(test_sentence)
-#     iobs = test_sentence.to_iobs()
-#     print("Predicted:", ' '.join(tagger.tag(util.sentence_to_features(iobs))))
-#     print("Correct:  ", ' '.join(util.sentence_to_labels(iobs)))
-
-
-def evaluate(x_test, y_test):
+def predict(x_test):
     tagger = pycrfsuite.Tagger()
     tagger.open('model_0.crfsuite')
-    y_pred = [tagger.tag(i) for i in x_test]
-    print(bio_classification_report(y_test, y_pred))
+    return [tagger.tag(i) for i in x_test]
+
+
+def print_prediction(x_test, ids, offsets, texts):
+    y_pred = predict(x_test)
+
+    for i in range(len(x_test)):
+        j = 0
+        while j < len(x_test[i]):
+            if y_pred[i][j] != 'O':
+                id_ = ids[i][j]
+                pred = y_pred[i][j][2:]
+                text = texts[i][j]
+                offset = offsets[i][j]
+                while j < len(x_test[i]) - 1 and y_pred[i][j + 1][0] == 'I':
+                    j += 1
+                    text += ' ' + texts[i][j]
+                    offset.end = offsets[i][j].end
+                print(id_, offset, text, pred, sep='|')
+            j += 1
 
 
 def bio_classification_report(y_true, y_pred):
@@ -78,11 +88,7 @@ def tune(x_train, y_train, x_test, y_test):
         for possible_transitions in [True, False]:
             print("c1=" + str(0) + ", c2=" + str(c2) + ", trans=" + str(possible_transitions))
             train(x_train, y_train, c1=0, c2=c2, max_iterations=1000, possible_transitions=possible_transitions)
-            evaluate(x_test, y_test)
-
-
-def save():
-    pass
+            bio_classification_report(y_test, predict(x_test))
 
 
 def main():
@@ -90,22 +96,16 @@ def main():
     x_train, y_train, x_test, y_test = None, None, None, None
 
     if args.train:
-        x_train, y_train = extract_data(args.train)
+        x_train, y_train, _, _, _ = extract_data(args.train)
         train(x_train, y_train, c1=0.001, c2=1, max_iterations=1000, possible_transitions=True)
 
     if args.test and not args.tune:
-        x_test, y_test = extract_data(args.test)
-        evaluate(x_test, y_test)
-
-        if args.save:
-            save()
+        x_test, y_test, ids, offsets, texts = extract_data(args.test)
+        print_prediction(x_test, ids, offsets, texts)
 
     elif args.tune and args.train and args.test:
         tune(x_train, y_train, x_test, y_test)
-
-        if args.save:
-            save()
-
+    
 
 if __name__ == '__main__':
     main()

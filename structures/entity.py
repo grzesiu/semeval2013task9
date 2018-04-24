@@ -21,6 +21,9 @@ class Entity(Structure):
         def parse(cls, offset_as_str):
             return [cls(*map(int, offset.split('-'))) for offset in offset_as_str.split(';')]
 
+        def __repr__(self):
+            return '{0}-{1}'.format(self.start, self.end)
+
     def __init__(self, id_, offset, label, text):
         super().__init__(id_)
         self.offset = offset
