@@ -52,7 +52,7 @@ class Entity(Structure):
         offset = 0
         for token in tokens:
             offset = self.text.find(token, offset)
-            yield token, Entity.Offset(offset, self.offset.start + offset + len(token))
+            yield token, Entity.Offset(self.offset.start + offset, self.offset.start + offset + len(token) - 1)
             offset += len(token)
 
     @classmethod
