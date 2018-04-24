@@ -37,12 +37,20 @@ class Entity(Structure):
             else:
                 return IOB.Label.I
 
-        words = nltk.word_tokenize(self.text)
+        words, offsets = list(zip(*list(self.spans())))
         tagged_words = nltk.pos_tag(words)
         iobs = []
-        for i, tagged_word in enumerate(tagged_words):
-            iobs.append(IOB(tagged_word[0], tagged_word[1], get_iob_label(i), self.label))
+        for i in range(len(tagged_words)):
+            iobs.append(IOB(tagged_words[i][0], tagged_words[i][1], get_iob_label(i), self.label, offsets[i]))
         return iobs
+
+    def spans(self):
+        tokens = nltk.word_tokenize(self.text)
+        offset = 0
+        for token in tokens:
+            offset = self.text.find(token, offset)
+            yield token, Entity.Offset(offset, self.offset.start + offset + len(token))
+            offset += len(token)
 
     @classmethod
     def parse(cls, node):
@@ -55,6 +63,6 @@ class Entity(Structure):
     @classmethod
     def empty(cls, text, start, end):
         return cls(None,
-                   (start, end),
+                   Entity.Offset(start, end),
                    None,
                    text[start:end + 1])

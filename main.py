@@ -50,6 +50,13 @@ def predict(tagger, test_sentence):
     print("Correct:  ", ' '.join(util.sentence_to_labels(iobs)))
 
 
+def evaluate(x_test, y_test):
+    tagger = pycrfsuite.Tagger()
+    tagger.open('model_0.crfsuite')
+    y_pred = [tagger.tag(i) for i in x_test]
+    print(bio_classification_report(y_test, y_pred))
+
+
 def bio_classification_report(y_true, y_pred):
     lb = LabelBinarizer()
     y_true_combined = lb.fit_transform(list(chain.from_iterable(y_true)))
@@ -67,19 +74,16 @@ def bio_classification_report(y_true, y_pred):
     )
 
 
-def evaluate(x_test, y_test):
-    tagger = pycrfsuite.Tagger()
-    tagger.open('model_0.crfsuite')
-    y_pred = [tagger.tag(i) for i in x_test]
-    print(bio_classification_report(y_test, y_pred))
-
-
 def tune(x_train, y_train, x_test, y_test):
     for c2 in [1e-3, 1e-2, 1e-1, 1, 10, 100]:
         for possible_transitions in [True, False]:
             print("c1=" + str(0) + ", c2=" + str(c2) + ", trans=" + str(possible_transitions))
             train(x_train, y_train, c1=0, c2=c2, max_iterations=1000, possible_transitions=possible_transitions)
             evaluate(x_test, y_test)
+
+
+def save():
+    pass
 
 
 def main():
@@ -95,13 +99,13 @@ def main():
         evaluate(x_test, y_test)
 
         if args.save:
-            pass
+            save()
 
     elif args.tune and args.train and args.test:
         tune(x_train, y_train, x_test, y_test)
 
         if args.save:
-            pass
+            save()
 
 
 if __name__ == '__main__':

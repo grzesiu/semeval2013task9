@@ -7,11 +7,12 @@ class IOB:
         O = 'O'
         B = 'B'
 
-    def __init__(self, text, pos_label, iob_label, entity_label=None):
+    def __init__(self, text, pos_label, iob_label, entity_label, offset):
         self.text = text
         self.pos_label = pos_label
         self.iob_label = iob_label
         self.entity_label = entity_label
+        self.offset = offset
 
     def __repr__(self):
         return '{0} {1} {2}'.format(self.text, self.pos_label, self.get_label())
