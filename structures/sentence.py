@@ -14,11 +14,13 @@ class Sentence(Structure):
         iobs = []
         previous = 0
         for entity in self.entities:
-            iobs.extend(Entity.empty(self.text, previous, entity.offset.start - 1).to_iob())
+            if self.text[previous: entity.offset.start].strip():
+                iobs.extend(Entity.empty(self.text, previous, entity.offset.start - 1).to_iob())
             iobs.extend(entity.to_iob())
             previous = entity.offset.end + 1
 
-        iobs.extend(Entity.empty(self.text, previous, len(self.text) - 1).to_iob())
+        if self.text[previous:len(self.text)].strip():
+            iobs.extend(Entity.empty(self.text, previous, len(self.text) - 1).to_iob())
         return iobs
 
     def __repr__(self):
