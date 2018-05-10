@@ -22,7 +22,7 @@ def extract_data(directory):
     docs = [Document.from_file(os.path.join(directory, filename))
             for filename in os.listdir(directory)]
     data = [util.sentence_to_features(sentence) for doc in docs for sentence in doc.sentences]
-    x, y, ids, offsets, texts = zip(*[zip(*i) for i in data])
+    x, y, ids, offsets, texts = zip(*[zip(*i) for i in data if i])
     return x, y, ids, offsets, texts
 
 
