@@ -10,12 +10,12 @@ class Document(Structure):
         self.sentences = sentences
 
     @classmethod
-    def parse(cls, node):
+    def parse(cls, node, test=False):
         id_ = node.attrib.get('id')
-        sentences = [Sentence.parse(child) for child in node]
+        sentences = [Sentence.parse(child, test) for child in node]
         return cls(id_, sentences)
 
     @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, filename, test=False):
         tree = xml.etree.ElementTree.parse(filename)
-        return cls.parse(tree.getroot())
+        return cls.parse(tree.getroot(), test)

@@ -1,3 +1,5 @@
+import re
+
 import nltk
 
 from structures.iob import IOB
@@ -56,12 +58,17 @@ class Entity(Structure):
             offset += len(token)
 
     @classmethod
-    def parse(cls, node):
+    def parse(cls, node, test=False):
         id_ = node.attrib.get('id')
         offsets = Entity.Offset.parse(node.attrib.get('charOffset'))
         label = Entity.Label(node.attrib.get('type'))
         text = node.attrib.get('text')
-        return [cls(id_, offset, label, text) for offset in offsets]
+        if test:
+            matches = [(m.group(0), m.start(), m.end() - 1) for m in re.finditer(r'\S+', text)]
+            return [cls(id_, Entity.Offset(offset.start + start, offset.start + end), label, match)
+                    for offset in offsets for match, start, end in matches]
+        else:
+            return [cls(id_, offset, label, text) for offset in offsets]
 
     @classmethod
     def empty(cls, text, start, end):
